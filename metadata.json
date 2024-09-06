@@ -15,11 +15,23 @@
     },
     {
       "operatingsystem": "RedHat",
-      "operatingsystemrelease": ["5","6","7","8"]
+      "operatingsystemrelease": ["5","6","7","8","9"]
+    },
+    {
+      "operatingsystem": "OracleLinux",
+      "operatingsystemrelease": ["8","9"]
+    },
+    {
+      "operatingsystem": "Rocky",
+      "operatingsystemrelease": ["8","9"]
+    },
+    {
+      "operatingsystem": "AlmaLinux",
+      "operatingsystemrelease": ["8","9"]
     },
     {
       "operatingsystem": "CentOS",
-      "operatingsystemrelease": ["5","6","7"]
+      "operatingsystemrelease": ["5","6","7","8","9"]
     },
     {
       "operatingsystem": "Fedora",
@@ -47,9 +59,9 @@
     }
   ],
   "requirements": [
-    {"name":"puppet","version_requirement":">= 5.5.10 < 7.0.0" }
+    {"name":"puppet","version_requirement":">= 5.5.10 < 9.0.0" }
   ],
   "dependencies": [
-    {"name":"puppetlabs/stdlib","version_requirement":">= 5.2.0 < 7.0.0"}
+    {"name":"puppetlabs/stdlib","version_requirement":">= 5.2.0 < 10.0.0"}
   ]
 }

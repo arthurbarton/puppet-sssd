@@ -1,0 +1,8 @@
+---
+sssd::extra_packages:
+  - 'authselect'
+  - 'oddjob-mkhomedir'
+
+sssd::manage_oddjobd: true
+
+sssd::disable_mkhomedir_flags: []

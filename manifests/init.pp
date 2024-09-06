@@ -52,11 +52,11 @@ class sssd (
   Enum['present', 'absent'] $ensure = 'present',
   Hash $config = {
     'sssd'               => {
-      'domains'             => $::domain,
+      'domains'             => $facts['networking']['domain'],
       'config_file_version' => 2,
       'services'            => ['nss', 'pam'],
     },
-    "domain/${::domain}" => {
+    "domain/${facts['networking']['domain']}" => {
       'access_provider'    => 'simple',
       'simple_allow_users' => ['root'],
     },
@@ -96,7 +96,7 @@ class sssd (
       if !($::facts['os']['release']['major'] in ['2']) {
         warning("osname Amazon's os.release.major is <${::facts['os']['release']['major']}> and must be 2.")
       }
-    } elsif ($::facts['os']['name'] in ['RedHat', 'CentOS']) {
+    } elsif ($::facts['os']['name'] in ['RedHat', 'CentOS', 'OracleLinux', 'Rocky', 'AlmaLinux']) {
       if !($::facts['os']['release']['major'] in ['6', '7', '8']) {
         warning("osname RedHat's os.release.major is <${::facts['os']['release']['major']}> and must be 6, 7 or 8.")
       }
@@ -136,7 +136,7 @@ class sssd (
     default   => true,
   }
 
-  ensure_packages($sssd_package,
+  stdlib::ensure_packages($sssd_package,
     {
       ensure => $sssd_package_ensure,
     }
@@ -144,7 +144,7 @@ class sssd (
   Package[$sssd_package] -> File['sssd.conf']
 
   if $extra_packages {
-    ensure_packages($extra_packages,
+    stdlib::ensure_packages($extra_packages,
       {
         ensure  => $extra_packages_ensure,
       }
@@ -197,10 +197,10 @@ class sssd (
     content => template($config_template),
   }
 
-  case $::osfamily {
+  case $facts['os']['family'] {
     'RedHat': {
       if ($::facts['os']['name'] == 'Fedora' and versioncmp($::facts['os']['release']['major'], '28') >= 0) or
-      ( $::facts['os']['family'] == 'RedHat' and versioncmp($::facts['os']['release']['major'], '8') >= 0) {
+      ( $::facts['os']['family'] == 'RedHat' and versioncmp($::facts['os']['release']['major'], '9') >= 0) {
         if $ensure == 'present' {
           $authselect_options = join(
             concat(
