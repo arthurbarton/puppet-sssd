@@ -48,6 +48,8 @@
 #
 # @param authselect_profile  Name of authselect profile to use
 #
+# @param select_mkhomedir Run the authselect profile selector
+#
 class sssd (
   Enum['present', 'absent'] $ensure = 'present',
   Hash $config = {
@@ -88,6 +90,7 @@ class sssd (
     '--disablesssdauth',
   ],
   String $authselect_profile='sssd',
+  Boolean $select_mkhomedir = false,
 ) {
 
   # Warn on unsupported platforms
@@ -221,10 +224,12 @@ class sssd (
         # previous configuration contained in /etc/pam.d was not
         # created by authselect. This condition is true on fresh
         # installations.
-        exec { 'authselect-mkhomedir':
-          command => "${authselect_exec} select ${authselect_options} --force",
-          unless  => "/usr/bin/test \"`${authselect_exec} current --raw`\" = \"${authselect_options}\"",
-          require => File['sssd.conf'],
+        if $select_mkhomedir {
+          exec { 'authselect-mkhomedir':
+            command => "${authselect_exec} select ${authselect_options} --force",
+            unless  => "/usr/bin/test \"`${authselect_exec} current --raw`\" = \"${authselect_options}\"",
+            require => File['sssd.conf'],
+          }
         }
       } else {
         if $ensure == 'present' {
